@@ -16,6 +16,8 @@ Upstream repository: <https://github.com/dcooney/instant-images>
 - **Search term is kept when switching providers.** Searching for something on Unsplash and then switching to Pexels re-runs the same search instead of resetting to the default listing. Provider-specific search filters are reset, since they are not portable between APIs.
 - **Search history for everyone.** Recent searches are stored in the browser's local storage and offered in a dropdown. Previously this required the paid add-on.
 - **The Instant Images block is always available.** It used to be locked behind an add-on license.
+- **The Gutenberg plugin sidebar is gone.** The lightning-bolt button it added to the editor toolbar has been removed; the Instant Images block and the media modal tab remain as ways into the plugin.
+- **Translations ship with the plugin.** The original relied on language packs from translate.wordpress.org, which a GitHub-only fork cannot receive. German is bundled and complete, including the JavaScript strings (filter labels and the like) that were never translated upstream.
 
 ## Requirements
 
@@ -85,10 +87,24 @@ Keys set this way are shown as read-only in the settings screen.
 ```bash
 npm install        # also runs composer install
 npm run dev        # watch mode
-npm run build      # production build into build/
+npm run build      # regenerate the .pot, compile translations, build into build/
 npm run lint       # eslint, stylelint and phpcs
 npm run zip        # build, then package dist/instant-images.zip
 ```
+
+### Translations
+
+`npm run build` regenerates `lang/instant-images.pot` from the sources and compiles every `lang/*.po` into the three formats WordPress reads:
+
+| File | Used for |
+|---|---|
+| `instant-images-<locale>.mo` | PHP strings |
+| `instant-images-<locale>.l10n.php` | PHP strings, WordPress 6.5+ fast path |
+| `instant-images-<locale>-<handle>.json` | JavaScript strings, via `wp_set_script_translations()` |
+
+To add or update a language, edit (or add) the `.po` in `lang/` and run `npm run build:i18n`. After changing source strings, run `npm run build:pot` first and merge the result into each `.po` with `wp i18n update-po`.
+
+Because this fork keeps the `instant-images` directory name, WordPress would otherwise match it against the wordpress.org plugin of the same slug and offer that as an update — which would replace the fork. `InstantImages::block_upstream_update()` removes the plugin from the update transient to prevent this. The same match is why a stale language pack may still exist on a site that once ran the original; the bundled translations are loaded last so they take precedence.
 
 Build output in `build/` is committed so the repository can be installed as-is.
 

@@ -40,8 +40,10 @@ for item in "${CONTENTS[@]}"; do
 	cp -R "${ROOT}/${item}" "${DEST}/"
 done
 
-# Source maps are development artifacts.
+# Source maps and translation sources are development artifacts; the compiled
+# .mo/.l10n.php/.json files are what WordPress actually reads.
 find "${DEST}" -name '*.map' -delete
+find "${DEST}/lang" \( -name '*.po' -o -name '*.pot' \) -delete
 
 cd "${ROOT}/dist"
 zip -rq "${SLUG}.zip" "${SLUG}"

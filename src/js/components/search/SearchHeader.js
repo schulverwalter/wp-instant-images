@@ -1,5 +1,4 @@
-import { FILTERS } from '../../constants/filters';
-import Filter from '../Filter';
+import { __, sprintf } from '@wordpress/i18n';
 import { usePluginContext } from '../../common/pluginProvider';
 
 /**
@@ -8,33 +7,31 @@ import { usePluginContext } from '../../common/pluginProvider';
  * @return {JSX.Element} The SearchHeader component.
  */
 export default function SearchHeader() {
-	const { provider, search, getPhotos, filterSearch } = usePluginContext();
+	const { search, getPhotos } = usePluginContext();
 	const { active = false, term = '', results: total = 0 } = search;
-
-	const filters = FILTERS[provider].search;
 
 	if (!active) {
 		// Exit if search is not active.
 		return null;
 	}
 
+	const label = term.replace('id:', 'ID: ');
+
 	return (
 		<header className="search-header">
-			<h2>{term.replace('id:', 'ID: ')}</h2>
+			<h2>
+				{sprintf(
+					/* translators: %s: The search term. */
+					__('Search results for: %s', 'instant-images'),
+					label,
+				)}
+			</h2>
 			<div className="search-header--text">
-				{`${total} ${instant_img_localize.search_results}`} <strong>{`${term}`}</strong>
-				<span>-</span>
-				<button onClick={() => getPhotos(true)}>{instant_img_localize.clear_search}</button>
+				<span>{`${total} ${instant_img_localize.search_results} ${label}`}</span>
+				<button type="button" className="button-link" onClick={() => getPhotos(true)}>
+					{instant_img_localize.clear_search}
+				</button>
 			</div>
-			{filters && Object.entries(filters).length ? (
-				<div className="control-nav--filters-wrap">
-					<div className="control-nav--filters">
-						{Object.entries(filters).map(([key, filter], index) => (
-							<Filter key={`${provider}-search-${key}-${index}`} filterKey={key} provider={provider} data={filter} handler={filterSearch} />
-						))}
-					</div>
-				</div>
-			) : null}
 		</header>
 	);
 }

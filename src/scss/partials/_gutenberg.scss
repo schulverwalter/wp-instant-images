@@ -1,29 +1,7 @@
 @use '../variables' as *;
 
-.instant-images-sidebar-icon,
-.instant-images-sidebar-icon svg {
-	display: inline-flex;
-	flex: 0 0 auto;
-}
-.instant-images-sidebar-icon svg {
-	height: 20px;
-	width: 20px;
-}
-.instant-images-sidebar-icon svg,
-.instant-images-sidebar-icon svg * {
-	stroke: $purple !important;
-	fill: $purple !important;
-}
-
-button[aria-expanded="true"] .instant-images-sidebar-icon svg,
-button[aria-expanded="true"] .instant-images-sidebar-icon svg * {
-	stroke: $purple_bright !important;
-	fill: $purple_bright !important;
-}
-
-// WP Block + Sidebar Plugin.
-.instant-images-block,
-.components-panel {
+// WP Block.
+.instant-images-block {
 	#photos {
 		&::after {
 			width: 100%;
@@ -146,20 +124,6 @@ button[aria-expanded="true"] .instant-images-sidebar-icon svg * {
 			}
 			input[type="search"]:-ms-input-placeholder {
 				font-size: 13px;
-			}
-
-			&-tooltip {
-				right: 3px;
-				left: auto;
-				top: 2px;
-				border-radius: 2px;
-				font-size: 12px;
-				height: 36px;
-				line-height: 35px;
-				&::before,
-				&::after {
-					display: none;
-				}
 			}
 		}
 	}
@@ -296,39 +260,6 @@ button[aria-expanded="true"] .instant-images-sidebar-icon svg * {
 					height: 100% !important;
 				}
 			}
-		}
-	}
-}
-
-// Sidebar Plugin.
-.components-panel {
-	// Photo Listing.
-	#photo-listing {
-		width: 100%;
-		margin: 0;
-		padding: 5px 10px;
-		overflow: hidden;
-		.photo {
-			width: 100%;
-			display: block;
-			opacity: 1 !important;
-			margin: 0 0 10px;
-			padding: 0;
-		}
-	}
-
-	// Filters + Search.
-	.control-nav {
-		padding: 10px 5px;
-		border-bottom: 1px solid $gb_border;
-		margin: 0 0 10px;
-		display: block;
-
-		&--filters-wrap {
-			flex: none;
-			width: 100%;
-			display: block;
-			margin-bottom: 10px;
 		}
 	}
 }

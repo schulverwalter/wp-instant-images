@@ -46,6 +46,7 @@ class InstantImages {
 		add_action( 'init', [ $this, 'load_plugin_textdomain' ] );
 
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), [ $this, 'add_action_links' ] );
+		add_filter( 'site_transient_update_plugins', [ $this, 'block_upstream_update' ] );
 
 		$this->includes();
 		$this->constants();
@@ -54,10 +55,41 @@ class InstantImages {
 	/**
 	 * Load the plugin text domain for translations.
 	 *
+	 * The translations shipped in lang/ are loaded last so they win over any
+	 * language pack WordPress may still have installed for the original
+	 * wordpress.org plugin, whose strings have diverged from this fork.
+	 *
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'instant-images', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' ); // load text domain.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core filter, applied the same way load_plugin_textdomain() does.
+		$locale = apply_filters( 'plugin_locale', determine_locale(), 'instant-images' );
+
+		load_plugin_textdomain( 'instant-images', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+		load_textdomain( 'instant-images', INSTANT_IMAGES_PATH . 'lang/instant-images-' . $locale . '.mo', $locale );
+	}
+
+	/**
+	 * Stop WordPress offering the wordpress.org plugin as an update.
+	 *
+	 * This fork keeps the "instant-images" directory name and text domain, so
+	 * the wordpress.org API matches it against the original plugin. Left alone,
+	 * the next upstream release would be offered - or auto-installed - over the
+	 * top of this fork and replace it entirely.
+	 *
+	 * @param mixed $value The update_plugins site transient.
+	 * @return mixed The filtered transient.
+	 */
+	public function block_upstream_update( $value ) {
+		$basename = plugin_basename( INSTANT_IMAGES_FILE );
+
+		if ( isset( $value->response[ $basename ] ) ) {
+			unset( $value->response[ $basename ] );
+		}
+		if ( isset( $value->no_update[ $basename ] ) ) {
+			unset( $value->no_update[ $basename ] );
+		}
+		return $value;
 	}
 
 	/**
@@ -89,6 +121,7 @@ class InstantImages {
 		define( 'INSTANT_IMAGES_TITLE', 'Instant Images' );
 		define( 'INSTANT_IMAGES_UPLOAD_PATH', $upload_dir['basedir'] . '/instant-images' );
 		define( 'INSTANT_IMAGES_UPLOAD_URL', $upload_dir['baseurl'] . '/instant-images/' );
+		define( 'INSTANT_IMAGES_FILE', __FILE__ );
 		define( 'INSTANT_IMAGES_PATH', plugin_dir_path( __FILE__ ) );
 		define( 'INSTANT_IMAGES_URL', plugins_url( '/', __FILE__ ) );
 		define( 'INSTANT_IMAGES_ADMIN_URL', plugins_url( 'admin/', __FILE__ ) );
@@ -248,20 +281,9 @@ class InstantImages {
 	 * @since 3.0
 	 */
 	public function enqueue_block_editor() {
-		$excluded_screens = apply_filters( 'instant_images_excluded_sidebar_screens', [ 'widgets', 'site-editor', 'woocommerce_page_wc-admin', 'toplevel_page_search-filter' ] );
+		$excluded_screens = apply_filters( 'instant_images_excluded_editor_screens', [ 'widgets', 'site-editor', 'woocommerce_page_wc-admin', 'toplevel_page_search-filter' ] );
 
 		if ( $this::instant_img_has_access() && $this::instant_img_not_current_screen( $excluded_screens ) ) {
-			// Plugin sidebar.
-			$sidebar_asset_file = require INSTANT_IMAGES_PATH . 'build/plugin-sidebar/index.asset.php'; // Get webpack asset file.
-
-			wp_enqueue_script(
-				'instant-images-plugin-sidebar',
-				INSTANT_IMAGES_URL . 'build/plugin-sidebar/index.js',
-				$sidebar_asset_file['dependencies'],
-				INSTANT_IMAGES_VERSION,
-				true
-			);
-
 			wp_enqueue_style(
 				'admin-instant-images',
 				INSTANT_IMAGES_URL . 'build/style-instant-images.css',
@@ -279,7 +301,7 @@ class InstantImages {
 				true
 			);
 
-			$this::instant_img_localize( 'instant-images-plugin-sidebar' );
+			$this::instant_img_localize( 'instant-images-block' );
 		}
 	}
 
@@ -325,6 +347,9 @@ class InstantImages {
 	public static function instant_img_localize( $script = 'instant-images-react' ) {
 		global $post;
 		$settings = self::instant_img_get_settings();
+
+		// Strings translated in JavaScript via @wordpress/i18n.
+		wp_set_script_translations( $script, 'instant-images', INSTANT_IMAGES_PATH . 'lang' );
 
 		// Unsplash API.
 		if ( defined( 'INSTANT_IMAGES_UNSPLASH_KEY' ) ) {
