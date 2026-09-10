@@ -1,44 +1,15 @@
 @use '../variables' as *;
 
-body.media_page_instant-images,
-body.settings_page_instant-images-settings {
-	background: #fff;
-
-	#wpcontent {
-		padding-left: 0;
-		padding-bottom: 40px;
-		@media screen and (max-width: $small) {
-			padding-bottom: 0;
-		}
-	}
-	#wpbody-content {
-		padding-bottom: 0;
-	}
-	#wpfooter {
-		padding-top: 0;
-		padding-bottom: 0;
-		line-height: 40px;
-		background: $lighter_grey;
-		border-top: 1px solid $grey;
-		position: fixed;
-		bottom: 0;
-		z-index: 1100;
-		p {
-			line-height: 40px;
-		}
-		@media screen and (max-width: $small) {
-			display: none;
-		}
-	}
+body.media_page_instant-images {
 	&.overflow-hidden {
 		overflow: hidden;
 	}
 }
 
 .instant-img-container {
-	font-size: 14px;
-	color: $text_alt;
 	position: relative;
+	font-size: 13px;
+	color: $text_alt;
 
 	.offscreen {
 		position: absolute;
@@ -50,97 +21,77 @@ body.settings_page_instant-images-settings {
 		padding: 0;
 		border: 0;
 	}
+
 	* {
 		box-sizing: border-box;
 	}
-	a {
-		color: $purple;
-		transition: $transition;
-		&:hover {
-			color: #5568ae;
-			text-decoration: none;
-		}
-	}
+
 	img {
 		max-width: 100%;
 	}
-	p {
-		display: block;
-		color: $text_alt;
-		width: 100%;
-		clear: both;
-		text-transform: none;
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		color: $text;
+		margin-top: 0;
+	}
+
+	ul {
 		padding: 0;
-		margin: 0 0 15px;
-		font-size: 14px;
+		margin: 0;
+		list-style: none;
 	}
 
 	.error-messaging {
-		padding: 22px 22px 22px 60px;
-		border-radius: $radius;
-		background: #da4444;
-		color: #fff;
-		font-size: 13px;
-		line-height: 1.75;
-		margin: 15px 15px 0;
 		display: block;
 		position: relative;
-		box-shadow: $shadow;
+		margin: 15px 0 0;
+		padding: 12px;
+		border-left: 4px solid $red;
+		background: #fff;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+		color: $text;
+		font-size: 13px;
+		line-height: 1.5;
+
 		&.warning {
-			background-color: $warn;
+			border-left-color: $warn;
 		}
+
 		strong {
-			font-size: 15px;
 			display: block;
-		}
-		&::before {
-			font-family: 'FontAwesome';
-			content: '\f06a';
-			display: block;
-			left: 18px;
-			top: 18px;
-			position: absolute;
-			font-size: 32px;
-			opacity: 0.75;
+			font-size: 14px;
 		}
 	}
 
 	.instant-images-wrapper {
-		padding: 0 25px 20px;
 		display: block;
 		overflow: hidden;
 		min-height: 400px;
+		padding: 0 0 20px;
 		background: url('../img/ajax-loader-lg.gif') no-repeat center center;
+
 		&.loaded {
 			background: none;
 		}
 	}
-}
 
-// defaults
-.instant-img-container h2,
-.instant-img-container h3,
-.instant-img-container h4 {
-	margin-top: 0;
-}
+	.spacer {
+		display: block;
+		height: 40px;
+		overflow: hidden;
+		clear: both;
+		width: 100%;
 
-// Settings
-.instant-img-container .save-settings {
-	p.submit {
-		float: left;
-		margin: 0 2px 0 0;
-		width: auto;
-	}
-	.loading {
-		width: 46px;
-		height: 28px;
-		display: none;
-		float: left;
-		background: #fff url('../img/ajax-loader.gif') no-repeat center center;
+		&.sm {
+			height: 20px;
+		}
 	}
 }
 
-// Thickbox styles
+// Thickbox (classic editor media tab).
 #TB_ajaxContent {
 	clear: both;
 	line-height: 1.4;
@@ -149,72 +100,4 @@ body.settings_page_instant-images-settings {
 	width: 100% !important;
 	box-sizing: border-box;
 	padding: 15px !important;
-}
-
-.instant-img-container h1,
-.instant-img-container h2,
-.instant-img-container h3,
-.instant-img-container h4 {
-	color: $text;
-	margin-top: 0;
-}
-.instant-img-container h4 + p {
-	margin-top: -6px;
-}
-.instant-img-container p.small {
-	font-size: 12px;
-	margin-top: -10px;
-	opacity: 0.7;
-}
-
-.instant-img-container ul {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-}
-.instant-img-container label,
-.instant-img-container input,
-.instant-img-container select,
-.instant-img-container textarea {
-	box-shadow: none;
-}
-.instant-img-container label {
-	padding: 5px 0 7px;
-}
-#unsplash-form-options h2,
-#unsplash-form-options p.desc {
-	display: none;
-}
-.instant-img-container input[type='text'],
-.instant-img-container input[type='number'],
-.instant-img-container textarea {
-	padding: 10px;
-	line-height: 1;
-	background: $lighter_grey;
-	width: 100%;
-	border-radius: $radius_md;
-	height: auto;
-}
-.instant-img-container input[type='text']:focus,
-.instant-img-container input[type='number']:focus,
-.instant-img-container textarea:focus {
-	border-color: $text_light;
-	box-shadow: 0 0 3px #ccc;
-}
-
-// Helpers
-.instant-img-container {
-	.spacer {
-		display: block;
-		height: 40px;
-		overflow: hidden;
-		clear: both;
-		width: 100%;
-		&.sm {
-			height: 20px;
-		}
-	}
-	input:-webkit-autofill {
-		box-shadow: 0 0 0 1000px #fff inset;
-	}
 }

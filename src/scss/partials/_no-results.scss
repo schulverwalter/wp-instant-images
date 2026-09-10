@@ -6,8 +6,8 @@
 	text-align: center;
 	position: relative;
 	&::before {
-		content: "\f002";
-		font-family: "FontAwesome";
+		content: "\f179";
+		font-family: dashicons;
 		display: block;
 		position: absolute;
 		z-index: 0;

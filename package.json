@@ -8,14 +8,14 @@
 		"WordPress",
 		"plugin"
 	],
-	"homepage": "https://wordpress.org/plugins/instant-images/",
+	"homepage": "https://github.com/schulverwalter/wp-instant-images",
 	"main": "src/index.js",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/dcooney/instant-images"
+		"url": "git+https://github.com/schulverwalter/wp-instant-images"
 	},
 	"bugs": {
-		"url": "https://github.com/dcooney/instant-images/issues"
+		"url": "https://github.com/schulverwalter/wp-instant-images/issues"
 	},
 	"engines": {
 		"node": ">=16",
@@ -26,6 +26,7 @@
 		"dev": "wp-scripts start --config webpack/prod.config.js",
 		"dev:proxy": "wp-scripts start --config webpack/proxy.config.js",
 		"build": "npm run build:pot && wp-scripts build --config webpack/prod.config.js",
+		"zip": "npm run build && bash bin/build-zip.sh",
 		"build:pot": "composer run pot",
 		"format": "wp-scripts format && composer run format",
 		"lint": "run-p lint:*",

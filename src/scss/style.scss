@@ -1,10 +1,8 @@
 @use 'partials/admin';
-@use 'partials/buttons';
 @use 'partials/loaders';
 @use 'partials/control-nav';
 @use 'partials/photos';
 @use 'partials/settings';
-@use 'partials/header';
 @use 'partials/editor';
 @use 'partials/gutenberg';
 @use 'partials/media-frame';
@@ -14,11 +12,7 @@
 @use 'partials/api-lightbox';
 @use 'partials/filter-dropdown';
 @use 'partials/forms';
-@use 'partials/cta';
 @use 'partials/search-header';
-@use 'partials/add-ons/index';
-
-@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
 .wp-block.instant-images-block {
 	margin-bottom: 0;

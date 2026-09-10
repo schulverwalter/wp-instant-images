@@ -1,570 +1,62 @@
-@use 'sass:color';
 @use '../variables' as *;
 
-$sticky_top: 62px;
-
+// The settings screen relies on core wp-admin styles (.wrap, .form-table,
+// .button, .wp-list-table). Only the provider sorter needs styles of its own.
 .instant-images-settings {
-	background-color: $lighter_grey;
-	padding: 20px;
-	display: grid;
-	gap: 20px;
-	grid-template-columns: repeat(1, minmax(0, 1fr));
-
-	@media screen and (min-width: $small) {
-		grid-template-columns: 4fr 8fr;
-		padding: 30px;
-		grid-gap: 30px;
+	.provider-sortable-list {
+		margin: 0 0 1em;
+		padding: 0;
+		max-width: 420px;
+		list-style: none;
+		border: 1px solid $border;
+		background-color: #fff;
 	}
 
-	@media screen and (min-width: $large) {
-		grid-template-columns: 3fr 9fr;
-	}
-
-	@media screen and (min-width: $xlarge) {
-		grid-template-columns: 2fr 10fr;
-	}
-
-	&--sticky {
-		@media screen and (min-width: $large) and (min-height: 640px) {
-			position: sticky;
-			top: $sticky_top;
-			left: 0;
-		}
-	}
-
-	// Header
-	&--header {
-		display: block;
-		width: 100%;
-		margin: 0;
-
-		.plugin-version {
-			display: none;
-			@media screen and (min-width: $small) {
-				display: block;
-				padding: 20px 11px 0;
-				font-size: 12px;
-			}
-		}
-
-		nav {
-			display: none;
-			@media screen and (min-width: $small) {
-				display: grid;
-			}
-			margin-top: 20px;
-			padding: 0 0 5px;
-			border-radius: $radius_xl;
-			background-color: #fff;
-			box-shadow: $shadow_md;
-			overflow: hidden;
-			h3 {
-				font-size: 12px;
-				background-color: #fff;
-				border-bottom: 1px solid $lighter_grey;
-				margin: 0 0 5px;
-				padding: 15px 15px 14px;
-				line-height: 1;
-				text-transform: uppercase;
-			}
-			button {
-				all: unset;
-				width: 100%;
-				border: none;
-				color: $text_alt;
-				line-height: 1;
-				padding: 10px 13px;
-				cursor: pointer;
-				white-space: nowrap;
-				text-align: left;
-				display: flex;
-				align-items: center;
-				flex-wrap: nowrap;
-				gap: 10px;
-				svg {
-					width: 18px;
-					fill: $border;
-				}
-				&:hover,
-				&:focus {
-					color: $text;
-					text-decoration: underline;
-				}
-				// Legacy - Remove in future versions.
-				i {
-					width: 25px;
-					color: $border;
-					font-size: 18px;
-				}
-			}
-		}
-	}
-
-	// Sections
-	&--sections {
-		.settings-entry {
-			display: flex;
-			flex-wrap: wrap;
-			align-items: flex-start;
-			width: 100%;
-			@media screen and (min-width: $large) {
-				padding: 30px;
-			}
-			margin: 0 0 30px;
-			background-color: #fff;
-			border-radius: $radius_xl;
-			box-shadow: $shadow_md;
-
-			&:last-of-type {
-				border-bottom: none;
-			}
-
-			&--title {
-				width: 100%;
-				padding: 25px;
-				position: relative;
-				border-bottom: 1px solid rgba($border, 0.75);
-
-				@media screen and (min-width: $large) {
-					width: 30%;
-					padding: 27px 30px 30px 45px;
-					border: none;
-					position: sticky;
-					top: $sticky_top;
-					margin-bottom: 20px;
-
-					&::after {
-						display: block;
-						content: '';
-						height: 1px;
-						width: 50px;
-						background-color: $border;
-						position: absolute;
-						bottom: 0;
-					}
-				}
-
-				svg {
-					display: none;
-					@media screen and (min-width: $large) {
-						display: block;
-					}
-					position: absolute;
-					left: 10px;
-					width: 25px;
-					height: auto;
-					fill: $border;
-					margin-top: -2px;
-				}
-				h2 {
-					font-size: 18px;
-					font-weight: 600;
-					border: none;
-					padding: 0;
-					margin: 0 0 8px;
-					line-height: 1.35;
-				}
-				p {
-					margin: 8px 0 0;
-				}
-			}
-
-			&--action {
-				width: 100%;
-				padding: 25px;
-				@media screen and (min-width: $large) {
-					width: 70%;
-					padding: 30px;
-				}
-				position: relative;
-				overflow: hidden;
-			}
-		}
-	}
-
-	// Save Settings.
-	.save-settings {
+	.provider-sortable-item {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
-		width: 100%;
 		align-items: center;
-		position: relative;
-		p.submit {
-			margin: 0;
-			width: auto;
+		gap: 8px;
+		margin: 0;
+		padding: 8px 10px;
+		border-bottom: 1px solid $gb_border;
+		background-color: #fff;
+		cursor: grab;
+
+		&:last-child {
+			border-bottom: none;
 		}
 
-		.loading,
-		.saved {
-			opacity: 0;
-			visibility: hidden;
-			transition: $transition;
-			&.active {
-				opacity: 1;
-				visibility: visible;
-			}
+		&.inactive {
+			background-color: $lighter_grey;
+			color: $text_light;
 		}
-		.loading {
-			width: 30px;
-			height: 30px;
-			display: block;
-			background: #fff url('../img/ajax-loader.gif') no-repeat center center;
+
+		&.dragging {
+			opacity: 0.5;
 		}
-		.saved {
-			margin-left: auto;
+
+		label {
 			display: flex;
 			align-items: center;
-			justify-content: center;
 			gap: 6px;
-			font-size: 13px;
-			padding: 0;
-			i {
-				color: $green;
-				font-size: 22px;
-			}
-		}
-	}
-
-	.scroll-section {
-		overflow: auto;
-		max-height: 550px;
-		padding-right: 5px;
-		&--small {
-			max-height: 300px;
-		}
-	}
-
-	// What's New
-	& .whats-new {
-		ul {
 			margin: 0;
-			padding: 0;
-			display: grid;
-			grid-gap: 10px;
-			grid-template-columns: repeat(1, 1fr);
-			@media screen and (min-width: $small) {
-				grid-template-columns: repeat(2, 1fr);
-			}
-
-			li {
-				line-height: 1.4;
-				width: 100%;
-				background-color: transparent;
-				padding: 0;
-				margin: 0;
-				position: relative;
-				display: flex;
-				p {
-					font-size: 13px;
-					position: relative;
-					z-index: 1;
-					margin: 0;
-					padding: 25px;
-					background-color: #fff;
-					border: 1px solid $border;
-					border-radius: $radius;
-					strong {
-						font-size: 14px;
-						color: $text;
-						display: block;
-						font-weight: 700;
-						margin: 0 0 5px;
-					}
-				}
-				code {
-					font-size: 12px;
-					margin: 0;
-					padding: 3px;
-					background: $lighter_grey;
-					border-radius: 2px;
-					box-shadow: 0 0 0 1px $grey;
-				}
-			}
-		}
-	}
-	// Provider Settings
-	& .provider-settings {
-		.provider-sortable-list {
-			margin: 0 0 20px;
-			max-width: 425px;
+			cursor: pointer;
 		}
 
-		.provider-sortable-item {
+		&--handle {
 			display: flex;
 			align-items: center;
-			gap: 5px;
-			padding: 15px 10px;
-			background-color: #fff;
-			border: 1px solid $border;
-			border-radius: $radius;
-			margin: 0 0 5px;
+			color: $text_light;
 			cursor: grab;
-			transition: $transition;
-			user-select: none;
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-
-			&.inactive {
-				background-color: $lighter_grey;
-				border-color: rgba($border, 0.5);
-				opacity: 0.75;
-			}
-
-			&.dragging {
-				opacity: 0.4;
-				border-color: $purple;
-				box-shadow: 0 0 0 1px $purple;
-			}
-
-			&--handle {
-				color: $text_light;
-				display: flex;
-				align-items: center;
-				cursor: grab;
-				flex-shrink: 0;
-			}
-
-			&:hover {
-				border-color: color.adjust($border, $lightness: -10%);
-				box-shadow: $shadow_md;
-
-				.provider-sortable-item--handle {
-					color: $purple;
-				}
-			}
-
-			.instant-images-checkbox {
-				padding: 0;
-
-				.toggle-switch {
-					position: static;
-				}
-			}
-
-			&--name {
-				font-size: 14px;
-				font-weight: 500;
-				color: $text;
-				flex: 1;
-			}
-
-			&--toggle {
-				position: relative;
-				display: inline-flex;
-				align-items: center;
-				cursor: pointer;
-				flex-shrink: 0;
-
-				input[type='checkbox'] {
-					position: absolute;
-					opacity: 0;
-					width: 0;
-					height: 0;
-				}
-
-				.provider-toggle-switch {
-					width: 40px;
-					height: 22px;
-					background-color: $border;
-					border-radius: 11px;
-					position: relative;
-					transition: $transition;
-				}
-
-				.provider-toggle-knob {
-					width: 16px;
-					height: 16px;
-					background-color: #fff;
-					border-radius: 50%;
-					position: absolute;
-					top: 3px;
-					left: 3px;
-					transition: $transition;
-					box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-				}
-
-				input[type='checkbox']:checked + .provider-toggle-switch {
-					background-color: $purple;
-
-					.provider-toggle-knob {
-						left: 21px;
-					}
-				}
-			}
 		}
 	}
 
-	// Settings
-	& .general-settings {
-		span.desc {
-			font-size: 11px;
-			display: block;
-			a {
-				text-decoration: none;
-				&:hover,
-				&:focus {
-					text-decoration: underline;
-				}
-			}
-		}
+	.instant-images-tagline {
+		display: block;
+		margin: 0 0 1.5em;
 	}
 
-	.instant-images-settings h3,
-	.instant-images-settings h4 {
-		margin-top: 0;
-	}
-
-	// Form Table.
-	.form-table {
-		margin: 0;
-		border: none;
-		position: relative;
-		top: -5px;
-
-		td,
-		p {
-			font-size: 14px;
-		}
-		th {
-			display: none;
-		}
-		td {
-			border-top: 0;
-			padding: 0 0 20px;
-			float: left;
-			width: 100%;
-			margin: 0;
-			&:empty {
-				padding: 0;
-			}
-		}
-		.form-msg {
-			display: block;
-			line-height: 18px;
-			padding: 12px 12px 12px 15px;
-			margin: 15px 0 0;
-			color: $text_alt;
-			background-color: #fff9ea;
-			border-left: 5px solid #dfd8c2;
-			border-radius: 2px;
-			span {
-				display: block;
-				padding: 6px 0 3px;
-			}
-		}
-	}
-
-	// Plugins --------------------------------------------------------------
-	& .other-plugins {
-		.cnkt-plugin-installer {
-			width: 100% !important;
-			position: static;
-			display: grid;
-			grid-template-columns: repeat(1, 1fr);
-			@media screen and (min-width: $xlarge) {
-				grid-template-columns: repeat(2, 1fr);
-			}
-			grid-gap: 10px;
-			padding: 0;
-			.plugin {
-				width: 100%;
-				padding: 0 !important;
-				margin: 0 !important;
-				line-height: 1.45;
-				border-color: $border;
-				border-radius: $radius;
-				overflow: hidden;
-				h2 {
-					margin-bottom: 5px;
-				}
-				p {
-					padding: 0;
-					margin: 0 0 5px;
-				}
-			}
-			&::after {
-				display: none;
-			}
-		}
-	}
-
-	.license-settings {
-		&--item {
-			border: 1px solid $border;
-			padding: 20px;
-			border-radius: $radius;
-			margin: 0 0 20px;
-			&:last-of-type {
-				margin: 0;
-			}
-
-			p.submit {
-				margin: 0;
-			}
-		}
-		&--status {
-			margin-bottom: 15px;
-			& > div {
-				position: relative;
-			}
-			&.invalid {
-				background-color: rgba($red, 0.05);
-				border-left: 4px solid $red;
-				padding: 20px;
-				border-radius: $radius;
-			}
-			input {
-				padding-left: 35px !important;
-				&[disabled] {
-					color: $text_light;
-					cursor: not-allowed;
-				}
-			}
-			span {
-				width: 30px;
-				text-align: center;
-				color: $green;
-				margin-right: 5px;
-				position: absolute;
-				top: 50%;
-				left: 5px;
-				transform: translateY(-50%);
-				&.dashicons-warning {
-					color: $red;
-				}
-			}
-			p {
-				font-size: 12px;
-				padding: 12px 5px 0;
-				margin: 0;
-			}
-		}
-	}
-}
-
-.instant-images-callout {
-	background-color: rgba($purple, 0.05);
-	border-left: 4px solid rgba($purple, 0.7);
-	padding: 20px;
-	border-radius: $radius;
-	display: grid;
-	@media screen and (min-width: $small) {
-		display: flex;
-		align-items: center;
-	}
-	gap: 15px;
-	width: 100%;
-
-	p {
-		width: auto;
-		margin: 0;
-		&:last-of-type {
-			@media screen and (min-width: $small) {
-				margin-left: auto;
-			}
-		}
+	.wp-list-table {
+		max-width: 780px;
 	}
 }

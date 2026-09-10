@@ -76,8 +76,8 @@
 			transition: $transition;
 			font-size: 14px;
 			&::before {
-				font-family: "FontAwesome";
-				content: "\f00c";
+				font-family: dashicons;
+				content: "\f147";
 				display: block;
 				color: $input;
 				opacity: 0.4;

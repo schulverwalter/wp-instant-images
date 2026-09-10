@@ -49,8 +49,8 @@
 			&::before {
 				display: block;
 				display: none;
-				content: '\f0b0';
-				font-family: 'FontAwesome';
+				content: '\f536';
+				font-family: dashicons;
 				color: $grey;
 				font-size: 24px;
 				margin-right: 10px;
@@ -125,10 +125,10 @@
 			&-tooltip {
 				position: absolute;
 				right: 100.5%;
-				top: -1px;
+				top: 0;
 				width: auto;
-				height: 40px;
-				line-height: 40px;
+				height: $el_height;
+				line-height: $el_height;
 				padding: 0 0 0 10px;
 				background: $purple;
 				border: 1px solid $purple_dark;
@@ -204,80 +204,40 @@
 				}
 			}
 
+			// Mirrors the core .search-box pattern: input plus a standard button.
 			form {
-				padding: 0 1px 0 0;
-				margin: 0;
+				display: flex;
+				align-items: flex-start;
+				gap: 4px;
 				position: relative;
-				height: $el_height;
-				display: block;
 				width: 100%;
-				&:hover {
-					button[type='submit'] {
-						opacity: 1;
-					}
+				margin: 0;
+				padding: 0;
+
+				// Wraps the input and the search history dropdown.
+				> div {
+					position: relative;
+					flex: 1;
+					min-width: 0;
 				}
 			}
-			input {
-				background-color: #fff;
-				color: $text;
+			input[type='search'] {
 				width: 100%;
-				padding: 0 15px 0 $el_height;
-				border-color: $border;
-				height: $el_height;
-				line-height: $el_height;
-				border-radius: $radius;
-				font-size: 14px;
+				margin: 0;
 				background-position: right 10px center;
 				background-repeat: no-repeat;
-				margin: 0;
 				&[disabled] {
 					cursor: not-allowed;
-				}
-				&:focus {
-					@include inputFocus;
 				}
 				&.searching {
 					background-image: url('../img/ajax-loader.gif');
 				}
 			}
-			// Remove X button in search.
-			input[type='text']::-webkit-search-decoration,
-			input[type='text']::-webkit-search-cancel-button,
-			input[type='text']::-webkit-search-results-button,
-			input[type='text']::-webkit-search-results-decoration {
-				-webkit-appearance: none;
-			}
 			button[type='submit'] {
-				position: absolute;
-				left: 1px;
-				top: 0;
-				width: $el_height;
-				height: $el_height;
-				line-height: $el_height;
-				border-radius: $radius;
-				z-index: 1;
-				border: none !important;
-				background: transparent !important;
-				cursor: pointer;
-				color: $text_alt;
-				box-shadow: none !important;
-				transition: $transition;
-				margin: 0;
-				padding: 0;
-				font-size: 18px;
-				&:hover,
-				&:focus {
-					color: $text;
-				}
+				flex: none;
 				&[disabled] {
 					cursor: not-allowed;
 				}
-			}
-			input[type='text']::placeholder {
-				color: $text_light;
-				font-weight: 400;
-				font-style: normal;
-				font-size: 14px;
 			}
 
 			// Search Drop.
@@ -285,8 +245,8 @@
 				position: absolute;
 				z-index: 99999;
 				top: 100%;
-				left: -1.5%;
-				width: 103%;
+				left: 0;
+				width: 100%;
 				padding: 15px;
 				margin-top: 5px;
 				background: #fff;
@@ -362,18 +322,6 @@
 						}
 					}
 
-					&.search-suggestions {
-						display: block;
-						button {
-							background-color: transparent;
-							border: none;
-							padding: 5px 0;
-							width: 100%;
-						}
-					}
-				}
-				&.extended-cta {
-					padding: 0;
 				}
 			}
 		}
