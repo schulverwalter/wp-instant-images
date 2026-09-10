@@ -163,6 +163,10 @@ How to install Instant Images.
 == Changelog ==
 
 = Fork =
+* NEW: German translations now ship with the plugin, including the JavaScript strings (filter labels, search history) that were never translated upstream. A GitHub-only fork cannot receive language packs from translate.wordpress.org, so they are bundled and loaded ahead of any stale pack.
+* CHANGE: Removed the Gutenberg plugin sidebar and the lightning-bolt button it added to the editor toolbar. The Instant Images block and the media modal tab remain.
+* CHANGE: Reworked the control bar - the search box sits on the left with room to breathe and a primary submit button, filters sit on the right. During a search the same filter row shows the search filters instead of rendering a second one below the results header.
+* FIX: WordPress no longer offers the wordpress.org plugin of the same slug as an update, which would have replaced this fork.
 * CHANGE: Removed all references to, and licence gating for, the commercial "Extended" add-on, along with the licence settings screen and the add-on updater.
 * CHANGE: Removed the "Our Plugins" section from the settings screen and the sponsored image slots from the results grid.
 * CHANGE: Rebuilt the admin screens on native WordPress markup and styling; dropped the Font Awesome CDN dependency in favour of Dashicons.

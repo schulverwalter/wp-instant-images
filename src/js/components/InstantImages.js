@@ -76,6 +76,10 @@ export default function InstantImages(props) {
 	const msnryRef = useRef();
 	const switchingProvider = useRef(false);
 
+	// While a search is active the search specific filters replace the default ones,
+	// so the control bar holds a single filter row in both states.
+	const activeFilterOptions = search?.active ? FILTERS[activeProvider].search || {} : filterOptions || {};
+
 	// WP Editor props.
 	const wpBlock = editor === 'block' ? true : false;
 	const blockSidebar = editor === 'sidebar' ? true : false;
@@ -548,16 +552,21 @@ export default function InstantImages(props) {
 				{wpBlock ? <WPBlockHeader switchProvider={switchProvider} /> : <ProviderNav switchProvider={switchProvider} />}
 				<RestAPIError />
 				<div className="control-nav">
-					<div className={classNames('control-nav--filters-wrap', apiError || search?.active ? 'inactive' : null)}>
-						{filterOptions && Object.entries(filterOptions)?.length ? (
+					<SearchForm ref={searchInputRef} />
+					<div className={classNames('control-nav--filters-wrap', apiError ? 'inactive' : null)}>
+						{Object.entries(activeFilterOptions)?.length ? (
 							<div className="control-nav--filters">
-								{Object.entries(filterOptions).map(([key, filter], index) => (
-									<Filter key={`${activeProvider}-${index}-${key}`} data={filter} filterKey={key} handler={filterPhotos} />
+								{Object.entries(activeFilterOptions).map(([key, filter], index) => (
+									<Filter
+										key={`${activeProvider}-${search?.active ? 'search' : 'photos'}-${index}-${key}`}
+										data={filter}
+										filterKey={key}
+										handler={search?.active ? filterSearch : filterPhotos}
+									/>
 								))}
 							</div>
 						) : null}
 					</div>
-					<SearchForm ref={searchInputRef} />
 				</div>
 				<div id="photo-listing" className={loading ? 'loading' : null}>
 					<SearchHeader />
