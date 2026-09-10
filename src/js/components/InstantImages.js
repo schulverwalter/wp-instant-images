@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useRef, useState } from '@wordpress/element';
-import axios from 'axios';
 import classNames from 'classnames';
 import Masonry from 'masonry-layout';
 import { useInView } from 'react-intersection-observer';
@@ -23,7 +22,6 @@ import RestAPIError from './RestAPIError';
 import Results from './Results';
 import ResultsWPBlock from './ResultsWPBlock';
 import Tooltip from './Tooltip';
-import { ExtendedCTA } from './cta/Extended';
 import SearchForm from './search/SearchForm';
 import SearchHeader from './search/SearchHeader';
 const imagesLoaded = require('imagesloaded');
@@ -45,8 +43,6 @@ let page = 1;
 export default function InstantImages(props) {
 	const { editor = 'classic', provider, data, container, api_error = null, clientId = null } = props;
 
-	const { activated: extended_activated = false, license: extended_license = false } = instant_img_localize?.addons?.extended;
-
 	const delay = 250;
 	const searchClass = 'searching';
 	const searchDefaults = {
@@ -67,7 +63,6 @@ export default function InstantImages(props) {
 	const [apiError, setAPIError] = useState(api_error); // API Error.
 	const [showAPILightbox, setShowAPILightbox] = useState(false); // Render API key lightbox.
 	const [search, setSearch] = useState(searchDefaults);
-	const [suggestions, setSuggestions] = useState([]);
 	const [filterOptions, setFilterOptions] = useState(FILTERS[activeProvider].filters);
 	const [filters, setFilters] = useState({});
 	const [searchFilters, setSearchFilters] = useState({});
@@ -79,6 +74,7 @@ export default function InstantImages(props) {
 	const photosRef = useRef();
 	const searchInputRef = useRef();
 	const msnryRef = useRef();
+	const switchingProvider = useRef(false);
 
 	// WP Editor props.
 	const wpBlock = editor === 'block' ? true : false;
@@ -101,16 +97,14 @@ export default function InstantImages(props) {
 			return false;
 		}
 
-		if (!reset && searchInputRef?.current?.value !== '') {
-			// Maintain search results for extended add-on users.
-			if (extended_activated && extended_license) {
-				doSearch(searchInputRef.current.value);
-				return;
-			}
+		if (!reset && search?.active && search?.term) {
+			// Maintain the active search when switching providers.
+			doSearch(search.term);
+			return;
 		}
 
 		setLoading(true); // Set loading state.
-		clearSearch(); // Reset search results.
+		clearSearch(reset); // Reset search results, keeping any unsubmitted term in the input.
 
 		resetScrollPosition();
 		page = 1;
@@ -303,15 +297,14 @@ export default function InstantImages(props) {
 	/**
 	 * Reset search results, settings and results view.
 	 *
+	 * @param {boolean} clearInput Also empty the search input.
 	 * @since 3.0
 	 */
-	function clearSearch() {
-		const term = searchInputRef?.current?.value || '';
-		if (term) {
+	function clearSearch(clearInput = true) {
+		if (clearInput && searchInputRef?.current?.value) {
 			searchInputRef.current.value = '';
 		}
 		setSearch(searchDefaults);
-		setSuggestions([]);
 	}
 
 	/**
@@ -412,32 +405,6 @@ export default function InstantImages(props) {
 		}, delay);
 	}
 	/**
-	 * Get autocomplete search suggestions.
-	 *
-	 * @param {string} term The search term.
-	 * @return {Array} The autocomplete suggestions.
-	 */
-	async function getSuggestions(term) {
-		if (!term || term?.length < 3) {
-			// Exit if term length is less than 3.
-			return;
-		}
-
-		// API endpoint URL.
-		const api_url = instant_img_localize.root + `instant-images-extended/suggestions/?term=${term}`;
-
-		// Get suggestions.
-		await axios
-			.get(api_url)
-			.then(function (res) {
-				setSuggestions(res.data);
-			})
-			.catch(function (error) {
-				console.warn(error);
-			});
-	}
-
-	/**
 	 * Renders the Masonry layout.
 	 *
 	 * @since 3.0
@@ -513,7 +480,8 @@ export default function InstantImages(props) {
 
 	/* Search filters change callback. */
 	useEffect(() => {
-		if (mounted && search?.active) {
+		// Skip during a provider switch - the filters callback below issues the request.
+		if (mounted && search?.active && !switchingProvider.current) {
 			doSearch(search?.term);
 		}
 	}, [searchFilters]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -523,11 +491,14 @@ export default function InstantImages(props) {
 		if (mounted) {
 			getPhotos();
 		}
+		switchingProvider.current = false;
 	}, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Provider change callback.
 	useEffect(() => {
 		setFilterOptions(FILTERS[activeProvider].filters);
+		switchingProvider.current = true;
+		setSearchFilters({}); // Search filters are provider specific, reset them.
 		setFilters({}); // Trigger filter change.
 	}, [activeProvider]);
 
@@ -572,18 +543,9 @@ export default function InstantImages(props) {
 					getPhotos,
 					searchHandler,
 					filterSearch,
-					suggestions,
-					getSuggestions,
 				}}
 			>
-				{wpBlock ? (
-					<WPBlockHeader switchProvider={switchProvider} />
-				) : (
-					<>
-						<ProviderNav switchProvider={switchProvider} />
-						<ExtendedCTA />
-					</>
-				)}
+				{wpBlock ? <WPBlockHeader switchProvider={switchProvider} /> : <ProviderNav switchProvider={switchProvider} />}
 				<RestAPIError />
 				<div className="control-nav">
 					<div className={classNames('control-nav--filters-wrap', apiError || search?.active ? 'inactive' : null)}>

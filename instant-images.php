@@ -1,15 +1,19 @@
 <?php
 /**
  * Plugin Name: Instant Images
- * Plugin URI: https://connekthq.com/plugins/instant-images/
- * Description: One-click image uploads directly to your media library from Unsplash, Openverse, Pixabay and Pexels.
+ * Plugin URI: https://github.com/schulverwalter/wp-instant-images
+ * Description: One-click image uploads directly to your media library from Unsplash, Openverse, Pixabay and Pexels. Fork of Instant Images by Darren Cooney.
  * Author: Darren Cooney
- * Twitter: @connekthq
  * Author URI: https://connekthq.com
  * Text Domain: instant-images
  * Version: 7.2.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
+ *
+ * This is a fork of Instant Images (https://wordpress.org/plugins/instant-images/),
+ * created and maintained by Darren Cooney / Connekt Media. It is not affiliated
+ * with or supported by them - please report issues with this fork at
+ * https://github.com/schulverwalter/wp-instant-images/issues
  *
  * @package InstantImages
  */
@@ -66,19 +70,12 @@ class InstantImages {
 		if ( is_admin() ) {
 			require_once __DIR__ . '/admin/admin.php';
 			require_once __DIR__ . '/admin/includes/settings.php';
-			require_once __DIR__ . '/admin/vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
-
-			if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-				// Only include this EDD helper if other plugins have not.
-				require_once __DIR__ . '/admin/vendor/EDD_SL_Plugin_Updater.php';
-			}
 		}
 
 		// API Routes.
 		require_once 'api/test.php';
 		require_once 'api/download.php';
 		require_once 'api/settings.php';
-		require_once 'api/license.php';
 	}
 
 	/**
@@ -101,12 +98,6 @@ class InstantImages {
 		define( 'INSTANT_IMAGES_API_SETTINGS', 'instant_img_api_settings' );
 		define( 'INSTANT_IMAGES_PROVIDER_SETTINGS', 'instant_img_provider_config' );
 		define( 'INSTANT_IMAGES_NAME', 'instant-images' );
-		define( 'INSTANT_IMAGES_ADDONS_URL', 'https://getinstantimages.com/add-ons/' );
-
-		// Instant Images: Extended.
-		if ( ! defined( 'INSTANT_IMAGES_EXTENDED_ID' ) ) {
-			define( 'INSTANT_IMAGES_EXTENDED_ID', '96' );
-		}
 	}
 
 	/**
@@ -274,21 +265,19 @@ class InstantImages {
 			wp_enqueue_style(
 				'admin-instant-images',
 				INSTANT_IMAGES_URL . 'build/style-instant-images.css',
-				[ 'wp-edit-post' ],
+				[ 'wp-edit-post', 'dashicons' ],
 				INSTANT_IMAGES_VERSION
 			);
 
 			// Image block.
-			if ( $this::instant_images_addon_valid_license( 'extended' ) ) {
-				$block_asset_file = require INSTANT_IMAGES_PATH . 'build/block/index.asset.php'; // Get webpack asset file.
-				wp_enqueue_script(
-					'instant-images-block',
-					INSTANT_IMAGES_URL . 'build/block/index.js',
-					$block_asset_file['dependencies'],
-					INSTANT_IMAGES_VERSION,
-					true
-				);
-			}
+			$block_asset_file = require INSTANT_IMAGES_PATH . 'build/block/index.asset.php'; // Get webpack asset file.
+			wp_enqueue_script(
+				'instant-images-block',
+				INSTANT_IMAGES_URL . 'build/block/index.js',
+				$block_asset_file['dependencies'],
+				INSTANT_IMAGES_VERSION,
+				true
+			);
 
 			$this::instant_img_localize( 'instant-images-plugin-sidebar' );
 		}
@@ -318,7 +307,7 @@ class InstantImages {
 			wp_enqueue_style(
 				'admin-instant-images',
 				INSTANT_IMAGES_URL . 'build/style-instant-images.css',
-				'',
+				[ 'dashicons' ],
 				INSTANT_IMAGES_VERSION
 			);
 
@@ -455,14 +444,6 @@ class InstantImages {
 				'error_on_load_title'     => __( 'An unknown error has occured while accessing {provider}', 'instant-images' ),
 				'error_on_load'           => __( 'Check that your API keys are valid in the Instant Images settings panel.', 'instant-images' ),
 				'error'                   => __( 'Error', 'instant-images' ),
-				'ad'                      => __( 'Ad', 'instant-images' ),
-				'advertisement'           => __( 'Advertisement', 'instant-images' ),
-				'addons'                  => [
-					'extended' => [
-						'activated' => self::instant_images_addon_activated( 'extended' ),
-						'license'   => self::instant_images_addon_valid_license( 'extended' ),
-					],
-				],
 			]
 		);
 	}
@@ -559,36 +540,9 @@ class InstantImages {
 	public function add_action_links( $links ) {
 		$mylinks = [
 			'<a href="' . INSTANT_IMAGES_WPADMIN_URL . '">' . __( 'Get Images', 'instant-images' ) . '</a>',
-			'<a href="' . INSTANT_IMAGES_ADDONS_URL . '" target="_blank">' . __( 'Browse Add-ons', 'instant-images' ) . '</a>',
 			'<a href="' . INSTANT_IMAGES_WPADMIN_SETTINGS_URL . '">' . __( 'Settings', 'instant-images' ) . '</a>',
 		];
 		return array_merge( $mylinks, $links );
-	}
-
-	/**
-	 * Is Instant Images add-on installed and activated.
-	 *
-	 * @param string $addon Add-on name.
-	 * @return boolean
-	 */
-	public static function instant_images_addon_activated( $addon ) {
-		switch ( $addon ) {
-			case 'extended':
-				return class_exists( 'InstantImagesExtended' );
-		}
-	}
-
-	/**
-	 * Is Instant Images add-on installed and activated with a valid license key.
-	 *
-	 * @param string $addon Add-on name.
-	 * @return boolean
-	 */
-	public static function instant_images_addon_valid_license( $addon ) {
-		switch ( $addon ) {
-			case 'extended':
-				return class_exists( 'InstantImagesExtended' ) && InstantImagesExtended::valid_license();
-		}
 	}
 
 	/**
@@ -640,35 +594,27 @@ class InstantImages {
 		}
 		ob_start();
 		?>
-		<table class="instant-images-image-size-table">
-			<tr>
-				<th><?php esc_attr_e( 'Label', 'instant-images' ); ?></th>
-				<th><?php esc_attr_e( 'Name', 'instant-images' ); ?></th>
-				<th><?php esc_attr_e( 'Width', 'instant-images' ); ?></th>
-				<th><?php esc_attr_e( 'Height', 'instant-images' ); ?></th>
-				<th><?php esc_attr_e( 'Crop', 'instant-images' ); ?></th>
-			</tr>
-		<?php
-		foreach ( $sizes as $key => $size ) {
-			$crop = $size['crop'];
-			$crop = $crop ? 'Yes' : 'No';
-			echo '<tr';
-			do_action( 'instant_images_image_size_tr_class', $key );
-			echo '>';
-			echo '<td>';
-			echo '<span>';
-			do_action( 'instant_images_image_size_before', $key );
-			echo '<strong>' . $size['label'] . '</strong>';
-			do_action( 'instant_images_image_size_after', $key );
-			echo '</span>';
-			echo '</td>';
-			echo '<td><pre>' . $key . '</pre></td>';
-			echo '<td>' . $size['width'] . '</td>';
-			echo '<td>' . $size['height'] . '</td>';
-			echo '<td>' . $crop . '</td>';
-			echo '</tr>';
-		}
-		?>
+		<table class="wp-list-table widefat fixed striped">
+			<thead>
+				<tr>
+					<th scope="col"><?php esc_attr_e( 'Label', 'instant-images' ); ?></th>
+					<th scope="col"><?php esc_attr_e( 'Name', 'instant-images' ); ?></th>
+					<th scope="col"><?php esc_attr_e( 'Width', 'instant-images' ); ?></th>
+					<th scope="col"><?php esc_attr_e( 'Height', 'instant-images' ); ?></th>
+					<th scope="col"><?php esc_attr_e( 'Crop', 'instant-images' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $sizes as $key => $size ) : ?>
+				<tr>
+					<td><strong><?php echo esc_html( $size['label'] ); ?></strong></td>
+					<td><code><?php echo esc_html( $key ); ?></code></td>
+					<td><?php echo esc_html( $size['width'] ); ?></td>
+					<td><?php echo esc_html( $size['height'] ); ?></td>
+					<td><?php echo $size['crop'] ? esc_html__( 'Yes', 'instant-images' ) : esc_html__( 'No', 'instant-images' ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
 		</table>
 		<?php
 		return ob_get_clean();

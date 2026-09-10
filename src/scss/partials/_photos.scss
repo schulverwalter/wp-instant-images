@@ -103,7 +103,7 @@
 				.photo-status {
 					background-color: $green;
 					&::before {
-						content: '\f00c';
+						content: '\f147';
 						color: #fff;
 					}
 				}
@@ -116,7 +116,7 @@
 				.photo-status {
 					background-color: $red;
 					&::before {
-						content: '\f12a';
+						content: '\f534';
 						color: #fff;
 						opacity: 0.8;
 					}
@@ -235,7 +235,7 @@
 			background-position: center center;
 			background-repeat: no-repeat;
 			&::before {
-				font-family: 'FontAwesome';
+				font-family: dashicons;
 				display: block;
 				color: #fff;
 				font-size: 24px;
@@ -404,65 +404,6 @@
 				}
 				img.user-wrap--photo {
 					z-index: 1;
-				}
-			}
-		}
-
-		// Advertisement block.
-		&.feature {
-			cursor: pointer;
-			&:hover,
-			&:focus-within {
-				text-decoration: underline;
-				.photo--wrap {
-					border-color: #ccc;
-				}
-			}
-			.photo--wrap {
-				padding: 5px;
-				border: 1px solid $border;
-				border-radius: $radius;
-				transition: border 0.25s ease;
-				.flag {
-					position: absolute;
-					right: 3px;
-					top: 3px;
-					font-size: 11px;
-					background-color: $yellow;
-					z-index: 10;
-					padding: 5px;
-					border-radius: $radius;
-					line-height: 1;
-				}
-				.img-wrap {
-					img {
-						display: block;
-						border-radius: $radius;
-					}
-				}
-				.feature-title {
-					display: flex;
-					align-items: center;
-					width: 100%;
-					padding: 8px 3px 3px;
-					img {
-						border-radius: 100%;
-						width: 25px;
-						height: 25px;
-						object-fit: cover;
-						margin-right: 6px;
-					}
-					span {
-						flex: 1;
-						display: block;
-						width: 100%;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-						font-size: 13px;
-						font-weight: 600;
-						line-height: 25px;
-					}
 				}
 			}
 		}

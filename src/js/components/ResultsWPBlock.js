@@ -4,7 +4,6 @@ import { usePluginContext } from '../common/pluginProvider';
 import WPBlockInstructions from '../editor/block/components/Instructions';
 import WPBlockLoadMore from '../editor/block/components/LoadMore';
 import Photo from './Photo';
-import Sponsor from './Sponsor';
 
 /**
  * Render the Results component.
@@ -31,11 +30,13 @@ const ResultsWPBlock = forwardRef((props, ref) => {
 		<Fragment>
 			<div id="photos" className={inactive ? 'inactive' : null} ref={ref}>
 				{!!data?.length &&
-					data.map((result, index) => (
-						<Fragment key={`${result.id}-${index}`}>
-							{result?.type === 'instant-images-ad' ? <Sponsor result={result} /> : <Photo result={result} type={result?.type} setInactive={setInactive} />}
-						</Fragment>
-					))}
+					data
+						.filter((result) => result?.type !== 'instant-images-ad')
+						.map((result, index) => (
+							<Fragment key={`${result.id}-${index}`}>
+								<Photo result={result} type={result?.type} setInactive={setInactive} />
+							</Fragment>
+						))}
 				<WPBlockLoadMore done={done} ref={loadMoreRef} />
 			</div>
 			<WPBlockInstructions show={data?.length} />

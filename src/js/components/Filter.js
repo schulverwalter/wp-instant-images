@@ -141,7 +141,7 @@ export default function Filter(props) {
 				<span className="filter-dropdown--button-label">{data?.label}</span>
 				<span className="filter-dropdown--button-selected">
 					{selected.replace(/_/g, ' ')}
-					<i className="fa fa-caret-down" aria-hidden="true"></i>
+					<span className="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
 				</span>
 			</button>
 			<div className={cn('filter-dropdown--menu', expanded ? 'expanded' : null)} data-key={filterKey} aria-hidden={expanded ? 'false' : 'true'} ref={menu}>

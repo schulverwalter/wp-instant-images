@@ -167,9 +167,9 @@ export default function APILightbox(props) {
 								</label>
 								<div className="api-lightbox--input-wrap">
 									<span className={apiStatus} title={title && title}>
-										{apiStatus === 'invalid' && <i className="fa fa-exclamation-triangle" aria-hidden="true"></i>}
-										{apiStatus === 'valid' && <i className="fa fa-check-circle" aria-hidden="true"></i>}
-										{apiStatus === 'loading' && <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>}
+										{apiStatus === 'invalid' && <span className="dashicons dashicons-warning" aria-hidden="true"></span>}
+										{apiStatus === 'valid' && <span className="dashicons dashicons-yes-alt" aria-hidden="true"></span>}
+										{apiStatus === 'loading' && <span className="spinner is-active" aria-hidden="true"></span>}
 									</span>
 									<input type="text" id="key" ref={inputRef} placeholder="Enter API Key" defaultValue={api_key}></input>
 								</div>

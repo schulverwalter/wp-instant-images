@@ -469,7 +469,7 @@ export default function Photo(props) {
 										onMouseLeave={(e) => hideTooltip(e)}
 										onClick={(e) => setFeaturedImageClick(e)}
 									>
-										<i className="fa fa-picture-o" aria-hidden="true"></i>
+										<span className="dashicons dashicons-format-image" aria-hidden="true"></span>
 										<span className="offscreen">{instant_img_localize.set_as_featured}</span>
 									</button>
 									<button
@@ -480,7 +480,7 @@ export default function Photo(props) {
 										onMouseLeave={(e) => hideTooltip(e)}
 										onClick={(e) => insertImageIntoPost(e)}
 									>
-										<i className="fa fa-plus" aria-hidden="true"></i>
+										<span className="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
 										<span className="offscreen">{instant_img_localize.insert_into_post}</span>
 									</button>
 								</Fragment>
@@ -495,7 +495,7 @@ export default function Photo(props) {
 									onMouseLeave={(e) => hideTooltip(e)}
 									onClick={(e) => insertImageIntoPost(e)}
 								>
-									<i className="fa fa-plus" aria-hidden="true"></i>
+									<span className="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
 									<span className="offscreen">{instant_img_localize.insert_into_post}</span>
 								</button>
 							)}
@@ -508,7 +508,7 @@ export default function Photo(props) {
 									onMouseEnter={(e) => showTooltip(e)}
 									onMouseLeave={(e) => hideTooltip(e)}
 								>
-									<i className="fa fa-pencil" aria-hidden="true"></i>
+									<span className="dashicons dashicons-edit" aria-hidden="true"></span>
 									<span className="offscreen">{instant_img_localize.edit_upload}</span>
 								</button>
 							) : (
@@ -519,7 +519,7 @@ export default function Photo(props) {
 									onMouseEnter={(e) => showTooltip(e)}
 									onMouseLeave={(e) => hideTooltip(e)}
 								>
-									<i className="fa fa-cog" aria-hidden="true"></i>
+									<span className="dashicons dashicons-admin-generic" aria-hidden="true"></span>
 									<span className="offscreen">{instant_img_localize.edit_details}</span>
 								</button>
 							)}
@@ -534,7 +534,7 @@ export default function Photo(props) {
 								onMouseEnter={(e) => showTooltip(e)}
 								onMouseLeave={(e) => hideTooltip(e)}
 							>
-								<i className="fa fa-heart heart-like" aria-hidden="true"></i> {likes}
+								<span className="dashicons dashicons-heart heart-like" aria-hidden="true"></span> {likes}
 							</span>
 						) : null}
 						<a
@@ -546,7 +546,7 @@ export default function Photo(props) {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							<i className="fa fa-external-link" aria-hidden="true"></i>
+							<span className="dashicons dashicons-external" aria-hidden="true"></span>
 							<span className="offscreen">{`${instant_img_localize.open_external} ${capitalizeFirstLetter(provider)}`}</span>
 						</a>
 					</div>

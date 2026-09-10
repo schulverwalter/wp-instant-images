@@ -68,10 +68,6 @@ function instant_images_admin_init() {
 		'instant_images_general_settings'
 	);
 
-	if ( InstantImages::instant_images_addon_valid_license( 'extended' ) ) {
-		instant_images_extended_add_settings(); // Add Extended Settings.
-	}
-
 	// Provider Config (order and active state).
 	register_setting(
 		'instant_images_provider_settings_group',
@@ -135,7 +131,7 @@ add_action( 'admin_init', 'instant_images_admin_init' );
  * @since 1.0
  */
 function instant_images_general_settings_callback() {
-	echo '<p class="desc">' . esc_attr__( 'Manage your media upload settings.', 'instant-images' ) . '</p>';
+	echo '<p>' . esc_attr__( 'Manage your media upload settings.', 'instant-images' ) . '</p>';
 }
 
 /**
@@ -145,7 +141,7 @@ function instant_images_general_settings_callback() {
  * @since 5.3
  */
 function instant_images_api_settings_callback() {
-	echo '<p class="desc">' . esc_attr__( 'Manage your provider API keys.', 'instant-images' ) . '</p>';
+	echo '<p>' . esc_attr__( 'Manage your provider API keys.', 'instant-images' ) . '</p>';
 }
 
 /**
@@ -187,8 +183,8 @@ function instant_images_width_callback() {
 		$options['unsplash_download_w'] = '1600';
 	}
 
-	echo '<label for="instant_img_settings[unsplash_download_w]">' . esc_attr__( 'Max Image Upload Width', 'instant-images' ) . '</label>';
-	echo '<input type="number" id="instant_img_settings[unsplash_download_w]" name="instant_img_settings[unsplash_download_w]" value="' . esc_attr( $options['unsplash_download_w'] ) . '" class="sm" step="20" max="4800" /> ';
+	echo '<input type="number" id="instant_img_settings[unsplash_download_w]" name="instant_img_settings[unsplash_download_w]" value="' . esc_attr( $options['unsplash_download_w'] ) . '" class="small-text" step="20" max="4800" /> ';
+	echo '<p class="description">' . esc_attr__( 'Maximum width, in pixels, of uploaded images.', 'instant-images' ) . '</p>';
 }
 
 /**
@@ -204,8 +200,8 @@ function instant_images_height_callback() {
 		$options['unsplash_download_h'] = '1200';
 	}
 
-	echo '<label for="instant_img_settings[unsplash_download_h]">' . esc_attr__( 'Max Image Upload Height', 'instant-images' ) . '</label>';
-	echo '<input type="number" id="instant_img_settings[unsplash_download_h]" name="instant_img_settings[unsplash_download_h]" value="' . esc_attr( $options['unsplash_download_h'] ) . '" class="sm" step="20" max="4800" /> ';
+	echo '<input type="number" id="instant_img_settings[unsplash_download_h]" name="instant_img_settings[unsplash_download_h]" value="' . esc_attr( $options['unsplash_download_h'] ) . '" class="small-text" step="20" max="4800" /> ';
+	echo '<p class="description">' . esc_attr__( 'Maximum height, in pixels, of uploaded images.', 'instant-images' ) . '</p>';
 }
 
 /**
@@ -215,11 +211,9 @@ function instant_images_height_callback() {
  * @since 5.2.0
  */
 function instant_images_auto_attribution_callback() {
-	$name  = 'auto_attribution';
-	$title = esc_attr__( 'Image Attribution', 'instant-images' );
 	$label = __( 'Automatically add image attribution (as captions) when uploading images.', 'instant-images' );
 
-	echo instant_images_settings_toggle_switch( $name, $title, $label ); // phpcs:ignore
+	echo instant_images_settings_checkbox( 'auto_attribution', $label ); // phpcs:ignore
 }
 
 /**
@@ -229,23 +223,20 @@ function instant_images_auto_attribution_callback() {
  * @since 3.2.1
  */
 function instant_images_media_modal_display_callback() {
-	$name  = 'media_modal_display';
-	$title = esc_attr__( 'Media Modal', 'instant-images' );
 	$label = __( 'Remove the Instant Images tab in the Media Modal.', 'instant-images' );
 
-	echo instant_images_settings_toggle_switch( $name, $title, $label ); // phpcs:ignore
+	echo instant_images_settings_checkbox( 'media_modal_display', $label ); // phpcs:ignore
 }
 
 /**
- * Render a toggle switch from checkbox.
+ * Render a standard WordPress checkbox setting.
  *
- * @param string $name The option name.
- * @param string $title The checkbox title.
- * @param string $label The toggle switch label.
+ * @param string $name    The option name.
+ * @param string $label   The checkbox label.
  * @param string $default The default setting.
- * @return string The HTML for the toggle switch.
+ * @return string The HTML for the checkbox.
  */
-function instant_images_settings_toggle_switch( $name, $title, $label, $default = '0' ) {
+function instant_images_settings_checkbox( $name, $label, $default = '0' ) {
 	$options = get_option( INSTANT_IMAGES_SETTINGS );
 	$options = is_array( $options ) ? $options : [];
 
@@ -253,13 +244,9 @@ function instant_images_settings_toggle_switch( $name, $title, $label, $default 
 		$options[ $name ] = $default;
 	}
 
-	$html  = '<div class="fake-label">' . $title . '</div>';
-	$html .= '<label for="' . $name . '" class="instant-images-checkbox">';
-	$html .= '<input type="checkbox" name="instant_img_settings[' . $name . ']" id="' . $name . '" value="1"' . ( $options[ $name ] ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<div class="instant-images-checkbox--switch">';
-	$html .= '<div class="toggle-switch"></div>';
-	$html .= '<div class="toggle-label">' . $label . '</div>';
-	$html .= '</div>';
+	$html  = '<label for="' . esc_attr( $name ) . '">';
+	$html .= '<input type="checkbox" name="instant_img_settings[' . esc_attr( $name ) . ']" id="' . esc_attr( $name ) . '" value="1"' . ( $options[ $name ] ? ' checked="checked"' : '' ) . ' /> ';
+	$html .= esc_html( $label );
 	$html .= '</label>';
 
 	return $html;
@@ -296,15 +283,25 @@ function instant_images_api_keys_callback( $args = [] ) {
 			$options[ $key ] = '';
 	}
 
-	echo '<label class="provider-label" for="instant_img_api_settings[' . esc_attr( $key ) . ']">';
-	echo esc_attr( ucfirst( $title ) ) . ' ' . esc_attr__( 'API Key', 'instant-images' );
-	echo '<a href="' . esc_url( $url ) . '" target="_blank">&rarr; ' . esc_attr__( 'Get Key', 'instant-images' ) . '</a>';
-	echo '</label>';
-	echo '<input type="text" id="instant_img_api_settings[' . esc_attr( $key ) . ']" name="instant_img_api_settings[' . esc_attr( $key ) . ']" value="' . esc_attr( $options[ '' . esc_attr( $key ) . '' ] ) . '" ' . esc_attr( $readonly ) . esc_attr( $disabled ) . ' />';
+	printf(
+		'<input type="text" id="%1$s" name="%1$s" value="%2$s" class="regular-text"%3$s />',
+		esc_attr( 'instant_img_api_settings[' . $key . ']' ),
+		esc_attr( $options[ $key ] ),
+		esc_attr( $readonly . $disabled )
+	);
 
+	echo '<p class="description">';
 	if ( defined( $constant ) ) {
-		echo '<div class="api-constant">' . esc_attr__( 'API key has been set via site constant.', 'instant-images' ) . '</div>';
+		echo esc_html__( 'API key has been set via site constant.', 'instant-images' );
+	} else {
+		printf(
+			'<a href="%1$s" target="_blank">%2$s</a>',
+			esc_url( $url ),
+			/* translators: %s: Provider name. */
+			esc_html( sprintf( __( 'Get a free %s API key', 'instant-images' ), ucfirst( $title ) ) )
+		);
 	}
+	echo '</p>';
 }
 
 /**

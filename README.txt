@@ -11,6 +11,10 @@ One-click uploads from Unsplash, Openverse, Pixabay, Pexels, and Giphy directly 
 
 == Description ==
 
+**This is a fork.** Instant Images was created and is maintained by [Darren Cooney](https://github.com/dcooney) / [Connekt Media](https://connekthq.com) - thank you for building it and releasing it under the GPL. This fork is maintained at [github.com/schulverwalter/wp-instant-images](https://github.com/schulverwalter/wp-instant-images) and is not affiliated with, endorsed by, or supported by Connekt Media. Please report issues with this fork on its own repository, not upstream.
+
+Compared to the original, this fork removes the promotion and licence gating for the commercial "Extended" add-on, removes advertising, uses native WordPress admin styling, keeps the search term when switching between providers, and makes search history and the Instant Images block available to everyone.
+
 Instantly upload photos from Unsplash, Openverse, Pixabay, Pexels, and Giphy to your website all without ever leaving WordPress!
 
 Instant Images is the fastest way to find and upload high-quality, free stock images directly from inside WordPress.
@@ -37,8 +41,6 @@ Works seamlessly with the Block Editor, Media Modal, and popular page builders.
 
 The perfect tool for users who want to save time and frustration by uploading images directly inside their WordPress installation and for developers who want to prototype and develop using real world imagery.
 
-**[Visit Plugin Website](https://getinstantimages.com)**
-
 = Features =
 
 - **Image Search** - The Instant Images search let’s you quickly find and upload images for any subject in a matter of seconds!
@@ -52,26 +54,6 @@ The perfect tool for users who want to save time and frustration by uploading im
 - **Accessibility** - Automatically include a relevant alt description for screen readers, visually reduced users, and SEO.
 - **Easy to Use** - It couldn't get much more simple, just click an image and it's automatically uploaded to your media library for use on your site.
 - **No Accounts Needed** - An account on any service provider is not required for use of this plugin. Just activate and you're ready to go.
-
-= Add-ons =
-
-== Instant Images: Extended ==
-
-Enhance Instant Images with powerful professional features.
-
-**Includes:**
-- Search History & Autocomplete.
-- Instant Images as a WordPress Block.
-- WordPress CLI Imports.
-- Batch Image Imports.
-- I'm Feeling Lucky WordPress Block.
-- Image Size Generator.
-- Instant Featured Images
-- Instagram-style image filters
-- Persistent search terms across providers.
-- And more...
-
-[Learn More](https://getinstantimages.com/add-ons/extended/)
 
 = Proxy Server =
 Instant Images routes all API requests to service providers (Unsplash, Pexels, Pixabay, Openverse etc.) through our custom proxy server at [proxy.getinstantimages.com](https://proxy.getinstantimages.com).
@@ -90,12 +72,12 @@ Please take a moment and read our Terms of Use and Privacy Policy for when using
 ---
 
 = How Can You Contribute? =
-Pull requests can be submitted via [GitHub](https://github.com/dcooney/instant-images).
+Pull requests for this fork can be submitted via [GitHub](https://github.com/schulverwalter/wp-instant-images). Contributions that are not specific to this fork are better sent to the [original plugin](https://github.com/dcooney/instant-images).
 
 ---
 
-= Website =
-[https://getinstantimages.com](https://getinstantimages.com)
+= Installation =
+This fork is not published on wordpress.org. Download the ZIP from the [releases page](https://github.com/schulverwalter/wp-instant-images/releases) and install it via Plugins &rarr; Add New Plugin &rarr; Upload Plugin.
 
 ---
 
@@ -179,6 +161,16 @@ How to install Instant Images.
 5. Instant Images is available in the WordPress media modal as a custom tab. It is available in front end page builder like Elementor, Beaver Builder and Divi.
 
 == Changelog ==
+
+= Fork =
+* CHANGE: Removed all references to, and licence gating for, the commercial "Extended" add-on, along with the licence settings screen and the add-on updater.
+* CHANGE: Removed the "Our Plugins" section from the settings screen and the sponsored image slots from the results grid.
+* CHANGE: Rebuilt the admin screens on native WordPress markup and styling; dropped the Font Awesome CDN dependency in favour of Dashicons.
+* NEW: The current search term is kept when switching between providers.
+* NEW: Search history is available to everyone.
+* NEW: The Instant Images block is always registered.
+
+Changelog entries below this point describe releases of the original plugin.
 
 = 7.2.0 - June 1, 2026 =
 * UPDATE: Added updates for WordPress 7.0 release.

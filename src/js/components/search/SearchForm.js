@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { usePluginContext } from '../../common/pluginProvider';
 import { getSearchHistory, saveSearchHistory } from '../../functions/localStorage';
 import { useClickOutside } from '../../hooks/useClickOutside';
-import { ExtendedSearchCTA } from '../cta/Extended';
 import SearchHistory from './SearchHistory';
 import SearchToolTip from './SearchToolTip';
 
@@ -13,8 +12,7 @@ import SearchToolTip from './SearchToolTip';
  * @return {JSX.Element} The SearchForm component.
  */
 const SearchForm = forwardRef(({}, ref) => {
-	const { activated: extended_activated = false, license: extended_license = false } = instant_img_localize?.addons?.extended;
-	const { searchHandler, apiError, suggestions, getSuggestions } = usePluginContext();
+	const { searchHandler, apiError } = usePluginContext();
 	const [history, setHistory] = useState([]);
 	const [show, setShow] = useState(false);
 
@@ -50,20 +48,9 @@ const SearchForm = forwardRef(({}, ref) => {
 		const term = ref?.current?.value;
 		if (term) {
 			searchHandler(e);
-			if (extended_license) {
-				saveSearchHistory(term);
-				setHistory(getSearchHistory());
-			}
+			saveSearchHistory(term);
+			setHistory(getSearchHistory());
 		}
-	}
-
-	/**
-	 * Should the history div be shown?
-	 *
-	 * @return {boolean} Show history.
-	 */
-	function showHistory() {
-		return history?.length || suggestions?.length;
 	}
 
 	useEffect(() => {
@@ -77,27 +64,11 @@ const SearchForm = forwardRef(({}, ref) => {
 					{instant_img_localize.search_label}
 				</label>
 				<div ref={historyRef}>
-					<input
-						ref={ref}
-						type="text"
-						id="search-input"
-						placeholder={instant_img_localize.search}
-						disabled={apiError}
-						onChange={(e) => extended_license && getSuggestions(e.target.value)}
-						onFocus={() => setShow(true)}
-					/>
-					{extended_license && showHistory() ? (
-						/* Extended: Show only with valid add-on license */
-						<SearchHistory show={show} history={history} setHistory={setHistory} setSearchValue={setSearchValue} container={historyRef} />
-					) : null}
-					{!extended_activated && (
-						/* Extended: Show only when add-on not installed. */
-						<ExtendedSearchCTA show={show} />
-					)}
+					<input ref={ref} type="search" id="search-input" placeholder={instant_img_localize.search} disabled={apiError} onFocus={() => setShow(true)} />
+					{!!history.length && <SearchHistory show={show} history={history} setHistory={setHistory} setSearchValue={setSearchValue} container={historyRef} />}
 				</div>
-				<button type="submit" disabled={apiError} ref={submitBtnRef}>
-					<i className="fa fa-search"></i>
-					<span className="offscreen">{instant_img_localize.search}</span>
+				<button type="submit" className="button" disabled={apiError} ref={submitBtnRef}>
+					{instant_img_localize.search_label}
 				</button>
 				<SearchToolTip show={show} />
 			</form>
